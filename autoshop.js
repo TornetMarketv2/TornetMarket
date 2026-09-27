@@ -1,21 +1,21 @@
 ﻿'use strict';
-// Non-executing Autoshop prop planner. No payments, orders, reservations, or jobs.
+// Device-only scheduling for the movie prop. No network purchases or fulfillment.
 function autoshopInventory(){return MARKET.products||[];}
-function scheduleState(plan){return plan.paused?'Paused':new Date(plan.start).getTime()<Date.now()?'Window passed':'Scheduled';}
+function scheduleState(plan){return plan.paused?'Paused':plan.fulfilledAt&&plan.repeat==='once'?'Fulfilled':plan.blockedReason|| (plan.fulfilledAt?'Fulfilled / Scheduled': 'Scheduled');}
 function autoshopPage(){
  const plans=state.autoshopSchedules;
- return `<section class="autoshop-hero panel"><div class="eyebrow">AUTOSHOP / PLANNING CONSOLE <span class="badge">VERY SIMPLE</span></div><h1>Shop the market.<br><span>Even when you're away.</span></h1><p>Choose your items. Set the quantities. Pick your window.</p><p class="autoshop-disclosure">Autoshop is used for scheduling inventory or securing products while your away. </p><div class="hero-actions"><button class="button primary" data-plan-action="create">${icon('plus')} Create a schedule</button><a href="#/market" class="text-button">Browse the market ${icon('arrow')}</a></div></section>${!authenticated?`<section class="panel empty-state"><h2>Your plans stay on the inside.</h2><p>Sign in to create and save a scheduling preview.</p><button class="button primary" data-action="login">Sign in ${icon('arrow')}</button></section>`:`<div class="autoshop-stats"><div><span>Saved schedules</span><strong>${plans.length.toString().padStart(2,'0')}</strong></div><div><span>Upcoming</span><strong>${plans.filter(p=>scheduleState(p)==='Scheduled').length.toString().padStart(2,'0')}</strong></div><div><span>Execution</span><strong>Autonomous</strong></div></div><div class="section-heading"><h2>Your schedules</h2><span class="small muted">Times shown in ${esc(Intl.DateTimeFormat().resolvedOptions().timeZone)}</span></div>${plans.length?`<div class="schedule-list">${plans.map(plan=>`<article class="panel schedule-card"><div class="schedule-top"><div><div class="eyebrow">${esc(plan.id)}</div><h3>${esc(plan.name)}</h3></div><span class="status-pill">${scheduleState(plan)}</span></div><div class="schedule-items">${plan.items.map(item=>`<span>${esc(item.name)} <b>× ${item.quantity}</b></span>`).join('')}</div><div class="schedule-details"><div><span>Starting</span><strong>${new Date(plan.start).toLocaleString()}</strong></div><div><span>Repeat preference</span><strong>${{once:'One time',daily:'Daily',weekly:'Weekly'}[plan.repeat]||'One time'}</strong></div><div><span>Per-run estimate / limit</span><strong>${money(plan.total)} / ${money(plan.limit)}</strong></div></div><div class="schedule-actions"><button class="button" data-plan-action="preview" data-plan-id="${esc(plan.id)}">Preview ${icon('arrow')}</button><button class="text-button" data-plan-action="edit" data-plan-id="${esc(plan.id)}">Edit</button><button class="text-button" data-plan-action="toggle" data-plan-id="${esc(plan.id)}">${plan.paused?'Resume':'Pause'}</button><button class="text-button" data-plan-action="remove" data-plan-id="${esc(plan.id)}">Remove</button></div></article>`).join('')}</div>`:`<section class="panel empty-state">${icon('box')}<h2>Set the scene. Choose your window.</h2><p>Create a plan to preview quantities, timing, and a spending limit.</p><button class="button primary" data-plan-action="create">Create your first schedule ${icon('plus')}</button></section>`}<p class="small muted">If your order is idle for more then 24 hours, the vendor was most likely occupied. You will recive a refund with additional credits.</p>`}`;
+ return `<section class="autoshop-hero panel"><div class="eyebrow">AUTOSHOP / PLANNING CONSOLE <span class="badge">VERY SIMPLE</span></div><h1>Shop the market.<br><span>Even when you're away.</span></h1><p>Choose your items. Set the quantities. Pick your window.</p><p class="autoshop-disclosure">Autoshop is used for scheduling inventory or securing products while your away. </p><div class="hero-actions"><button class="button primary" data-plan-action="create">${icon('plus')} Create a schedule</button><a href="#/market" class="text-button">Browse the market ${icon('arrow')}</a></div></section>${!authenticated?`<section class="panel empty-state"><h2>Your plans stay on the inside.</h2><p>Sign in to create and save a scheduling preview.</p><button class="button primary" data-action="login">Sign in ${icon('arrow')}</button></section>`:`<div class="autoshop-stats"><div><span>Saved schedules</span><strong>${plans.length.toString().padStart(2,'0')}</strong></div><div><span>Upcoming</span><strong>${plans.filter(p=>!p.paused&&!(p.repeat==='once'&&p.fulfilledAt)).length.toString().padStart(2,'0')}</strong></div><div><span>Execution</span><strong>Autonomous</strong></div></div><div class="section-heading"><h2>Your schedules</h2><span class="small muted">Times shown in ${esc(Intl.DateTimeFormat().resolvedOptions().timeZone)}</span></div>${plans.length?`<div class="schedule-list">${plans.map(plan=>`<article class="panel schedule-card"><div class="schedule-top"><div><div class="eyebrow">${esc(plan.id)}</div><h3>${esc(plan.name)}</h3></div><span class="status-pill">${scheduleState(plan)}</span></div><div class="schedule-items">${plan.items.map(item=>`<span>${esc(item.name)} <b>× ${item.quantity}</b></span>`).join('')}</div><div class="schedule-details"><div><span>Starting</span><strong>${new Date(plan.nextRun||plan.start).toLocaleString()}</strong></div><div><span>Repeat preference</span><strong>${{once:'One time',daily:'Daily',weekly:'Weekly'}[plan.repeat]||'One time'}</strong></div><div><span>Per-run estimate / limit</span><strong>${money(plan.total)} / ${money(plan.limit)}</strong></div></div><div class="schedule-actions"><button class="button" data-plan-action="preview" data-plan-id="${esc(plan.id)}">Preview ${icon('arrow')}</button><button class="text-button" data-plan-action="edit" data-plan-id="${esc(plan.id)}">Edit</button><button class="text-button" data-plan-action="toggle" data-plan-id="${esc(plan.id)}">${plan.paused?'Resume':'Pause'}</button><button class="text-button" data-plan-action="remove" data-plan-id="${esc(plan.id)}">Remove</button></div></article>`).join('')}</div>`:`<section class="panel empty-state">${icon('box')}<h2>Set the scene. Choose your window.</h2><p>Create a plan to preview quantities, timing, and a spending limit.</p><button class="button primary" data-plan-action="create">Create your first schedule ${icon('plus')}</button></section>`}<p class="small muted">If your order is idle for more then 24 hours, the vendor was most likely occupied. You will recive a refund with additional credits.</p>`}`;
 }
 function scheduleItemRow(item={id:'',quantity:1}){return `<div class="schedule-item-editor"><label>Items in stock<select data-schedule-field="item" required><option value="">Select an item</option>${item.id&&!autoshopInventory().some(p=>p.id===item.id)?`<option value="" selected disabled>${esc(item.name||item.id)} (no longer listed)</option>`:''}${autoshopInventory().map(p=>`<option value="${esc(p.id)}" ${item.id===p.id?'selected':''}>${esc(p.name)} · ${money(p.price)}</option>`).join('')}</select></label><label>Quantity<input data-schedule-field="quantity" type="number" min="1" max="99" step="1" value="${item.quantity}" required></label><button class="icon-button" type="button" data-plan-action="remove-row" aria-label="Remove this item">${icon('close')}</button></div>`;}
 function openScheduleEditor(plan){
  if(!requireLogin('#/autoshop'))return;
  const date=plan?new Date(plan.start):new Date(Date.now()+3600000);const local=new Date(date.getTime()-date.getTimezoneOffset()*60000).toISOString().slice(0,16);
- openModal(plan?'Edit schedule':'Create a schedule',`<form id="schedule-form" data-edit-id="${esc(plan?.id||'')}"><span class="badge">AUTONOMOUS SHOPPING / NO EXECUTION</span><label>Schedule name<input name="name" required maxlength="70" value="${esc(plan?.name||'')}" placeholder="After-hours collection"></label><div class="editor-section-title"><h3>Your selection</h3><button class="text-button" type="button" data-plan-action="add-row">${icon('plus')} Add item</button></div><div id="schedule-items-editor">${(plan?.items||[{id:'',quantity:1}]).map(scheduleItemRow).join('')}</div><div class="profile-fields"><label>Start date & time<input name="start" type="datetime-local" value="${local}" required></label><label>Repeat preference<select name="repeat">${[['once','One time'],['daily','Every day'],['weekly','Every week']].map(([v,t])=>`<option value="${v}" ${plan?.repeat===v?'selected':''}>${t}</option>`).join('')}</select></label></div><label>Spending limit per run (USD)<input name="limit" type="number" step="0.01" min="0.01" max="1000000000" value="${plan?.limit||100}" required></label><div class="summary-total"><span>Estimated selection</span><strong id="schedule-estimate">$0.00</strong></div><p class="small muted">${esc(Intl.DateTimeFormat().resolvedOptions().timeZone)} · Once money is in the escrow, vendor will start working on your item.</p><p class="error-text" id="schedule-error" role="alert"></p><div class="profile-form-actions"><button class="button" type="button" data-action="close">Cancel</button><button class="button primary" type="submit">Save schedule ${icon('check')}</button></div></form>`);
+ openModal(plan?'Edit schedule':'Create a schedule',`<form id="schedule-form" data-edit-id="${esc(plan?.id||'')}"><span class="badge">AUTONOMOUS SHOPPING</span><label>Schedule name<input name="name" required maxlength="70" value="${esc(plan?.name||'')}" placeholder="After-hours collection"></label><div class="editor-section-title"><h3>Your selection</h3><button class="text-button" type="button" data-plan-action="add-row">${icon('plus')} Add item</button></div><div id="schedule-items-editor">${(plan?.items||[{id:'',quantity:1}]).map(scheduleItemRow).join('')}</div><div class="profile-fields"><label>Start date & time<input name="start" type="datetime-local" value="${local}" required></label><label>Repeat preference<select name="repeat">${[['once','One time'],['daily','Every day'],['weekly','Every week']].map(([v,t])=>`<option value="${v}" ${plan?.repeat===v?'selected':''}>${t}</option>`).join('')}</select></label></div><label>Spending limit per run (USD)<input name="limit" type="number" step="0.01" min="0.01" max="1000000000" value="${plan?.limit||100}" required></label><div class="summary-total"><span>Estimated selection</span><strong id="schedule-estimate">$0.00</strong></div><p class="small muted">${esc(Intl.DateTimeFormat().resolvedOptions().timeZone)} · Once money is in the escrow, vendor will start working on your item.</p><p class="error-text" id="schedule-error" role="alert"></p><div class="profile-form-actions"><button class="button" type="button" data-action="close">Cancel</button><button class="button primary" type="submit">Save schedule ${icon('check')}</button></div></form>`);
  $('#modal').classList.add('schedule-editor-modal');updateScheduleEstimate();
 }
 function selectedScheduleItems(){return Array.from(document.querySelectorAll('.schedule-item-editor'),row=>{const id=row.querySelector('[data-schedule-field="item"]').value;const p=autoshopInventory().find(p=>p.id===id);const quantity=Number(row.querySelector('[data-schedule-field="quantity"]').value);return p?{id:p.id,name:p.name,price:p.price,quantity}:null;});}
 function updateScheduleEstimate(){const output=$('#schedule-estimate');if(output)output.textContent=money(selectedScheduleItems().reduce((sum,p)=>sum+(p&&Number.isFinite(p.quantity)?p.price*p.quantity:0),0));}
-function saveScheduleList(plans){const candidate={...state,autoshopSchedules:plans};try{localStorage.setItem('tornet-v2',JSON.stringify(candidate));state=candidate;return true;}catch{toast('Could not save this schedule on your device. Check browser storage.');return false;}}
+function saveScheduleList(plans){refreshSavedAccount();const candidate={...state,autoshopSchedules:plans};try{localStorage.setItem('tornet-v2',JSON.stringify(candidate));state=candidate;return true;}catch{toast('Could not save this schedule on your device. Check browser storage.');return false;}}
 document.addEventListener('click',event=>{
  const button=event.target.closest('[data-plan-action]');if(!button)return;const action=button.dataset.planAction;
  if(!requireLogin('#/autoshop'))return;
@@ -26,7 +26,7 @@ document.addEventListener('click',event=>{
  if(action==='remove-row'){button.closest('.schedule-item-editor').remove();updateScheduleEstimate();}
  if(action==='toggle'&&plan){if(saveScheduleList(state.autoshopSchedules.map(p=>p.id===plan.id?{...p,paused:!p.paused}:p))){render();toast(plan.paused?'Schedule resumed.':'Schedule paused.');}}
  if(action==='remove'&&plan){if(saveScheduleList(state.autoshopSchedules.filter(p=>p.id!==plan.id))){render();toast('Schedule removed.');}}
- if(action==='preview'&&plan)openModal(esc(plan.name),`<span class="badge">PREVIEW ONLY</span><p>${new Date(plan.start).toLocaleString()} · ${{once:'One time',daily:'Daily preference',weekly:'Weekly preference'}[plan.repeat]}</p>${plan.items.map(p=>`<div class="summary-line"><span>${esc(p.name)} × ${p.quantity}</span><strong>${money(p.price*p.quantity)}</strong></div>`).join('')}<div class="summary-total"><span>Estimated selection</span><strong>${money(plan.total)}</strong></div><p class="small muted">Spending limit: ${money(plan.limit)} per run. This is a fictional purchase plan. No stock is held, no wallet is charged, and no order is created.</p><button class="button primary full" data-action="close">Close preview ${icon('check')}</button>`);
+ if(action==='preview'&&plan)openModal(esc(plan.name),`<span class="badge">PREVIEW ONLY</span><p>${new Date(plan.start).toLocaleString()} · ${{once:'One time',daily:'Daily preference',weekly:'Weekly preference'}[plan.repeat]}</p>${plan.items.map(p=>`<div class="summary-line"><span>${esc(p.name)} × ${p.quantity}</span><strong>${money(p.price*p.quantity)}</strong></div>`).join('')}<div class="summary-total"><span>Estimated selection</span><strong>${money(plan.total)}</strong></div><p class="small muted">Spending limit: ${money(plan.limit)} per run. Scheduled runs update your orders and wallet on this device.</p><button class="button primary full" data-action="close">Close preview ${icon('check')}</button>`);
 });
 document.addEventListener('input',e=>{if(e.target.closest('#schedule-form'))updateScheduleEstimate();});
 document.addEventListener('change',e=>{if(e.target.closest('#schedule-form'))updateScheduleEstimate();});
@@ -37,7 +37,75 @@ document.addEventListener('submit',event=>{
  const name=String(data.get('name')).trim(),start=new Date(data.get('start')),repeat=String(data.get('repeat')),limit=Number(data.get('limit')),total=Math.round(items.reduce((sum,p)=>sum+p.price*p.quantity,0)*100)/100;
  if(!name)throw Error('Give your schedule a name.');if(!Number.isFinite(start.getTime())||start.getTime()<=Date.now())throw Error('Choose a future start time.');if(!['once','daily','weekly'].includes(repeat))throw Error('Choose a repeat preference.');if(!Number.isFinite(limit)||limit<total||limit>1000000000)throw Error('The spending limit must cover the estimated selection.');
  const previous=state.autoshopSchedules.find(p=>p.id===form.dataset.editId),plan={id:previous?.id||'AS-'+Date.now().toString(36).toUpperCase(),name,items,start:start.toISOString(),repeat,limit:Math.round(limit*100)/100,total,paused:previous?.paused||false};
- const plans=previous?state.autoshopSchedules.map(p=>p.id===plan.id?plan:p):[plan,...state.autoshopSchedules];if(saveScheduleList(plans)){render();toast('Schedule preview saved on this device.');}
+ const plans=previous?state.autoshopSchedules.map(p=>p.id===plan.id?plan:p):[plan,...state.autoshopSchedules];if(saveScheduleList(plans)){render();toast('Schedule saved on this device.');}
  }catch(problem){error.textContent=problem.message;}
 });
 document.getElementById('modal').addEventListener('close',()=>document.getElementById('modal').classList.remove('schedule-editor-modal'));
+
+// Store each order, debit, and execution cursor together so a reload cannot repeat a run.
+let autoshopChecking=false;
+function nextScheduleRun(iso,repeat){
+ const date=new Date(iso);
+ date.setDate(date.getDate()+(repeat==='weekly'?7:1));
+ return date.toISOString();
+}
+function processDueSchedules(){
+ if(!authenticated||document.hidden||$('#modal').open)return;
+ refreshSavedAccount();
+ const now=Date.now(),candidate=JSON.parse(JSON.stringify(state));
+ let changed=false,created=0;
+ for(const plan of candidate.autoshopSchedules){
+  if(plan.paused||(plan.repeat==='once'&&plan.fulfilledAt))continue;
+  let due=Date.parse(plan.nextRun||plan.start);
+  if(!Number.isFinite(due)||due>now)continue;
+  const block=reason=>{if(plan.blockedReason!==reason){plan.blockedReason=reason;changed=true;}};
+  if(!['once','daily','weekly'].includes(plan.repeat)){block('Review schedule');continue;}
+  const items=Array.isArray(plan.items)?plan.items.map(item=>{
+   const p=product(item.id);
+   return p&&Number.isInteger(item.quantity)&&item.quantity>0&&item.quantity<=99&&Number.isFinite(p.price)&&p.price>=0
+    ?{id:p.id,name:p.name,price:Math.round(p.price*100)/100,quantity:item.quantity}:null;
+  }):[];
+  if(!items.length||items.some(item=>!item)){block('Item unavailable');continue;}
+  const cents=items.reduce((sum,item)=>sum+Math.round(item.price*100)*item.quantity,0);
+  if(!Number.isSafeInteger(cents)||cents<0||!Number.isFinite(plan.limit)||cents>Math.round(plan.limit*100)){block('Spending limit exceeded');continue;}
+  // Bound work per pass; very long absences continue catching up on subsequent ticks.
+  for(let run=0;due<=now&&run<100;run++){
+   const scheduledFor=new Date(due).toISOString();
+   const runKey=plan.id+':'+scheduledFor;
+   const existing=candidate.orders.find(order=>order.autoshopRun===runKey);
+   const balanceCents=Math.round(candidate.balance*100);
+   if(!existing&&(!Number.isSafeInteger(balanceCents)||balanceCents<cents)){block('Insufficient balance');break;}
+   if(!existing){
+    const order={id:'TM-AS-'+crypto.randomUUID().slice(0,8).toUpperCase(),date:scheduledFor,processedAt:new Date(now).toISOString(),total:cents/100,items,autoshopRun:runKey,scheduleId:plan.id};
+    candidate.orders.unshift(order);
+    candidate.transactions.unshift({label:'Order '+order.id,amount:-order.total,type:'purchase',date:order.date});
+    candidate.balance=(balanceCents-cents)/100;
+    created++;
+   }
+   plan.fulfilledAt=scheduledFor;delete plan.blockedReason;changed=true;
+   if(plan.repeat==='once'){delete plan.nextRun;break;}
+   plan.nextRun=nextScheduleRun(scheduledFor,plan.repeat);due=Date.parse(plan.nextRun);
+  }
+ }
+ if(!changed)return;
+ candidate.orders.sort((a,b)=>Date.parse(b.date)-Date.parse(a.date));
+ try{localStorage.setItem('tornet-v2',JSON.stringify(candidate));}catch{toast('Autoshop could not save. No wallet funds were deducted.');return;}
+ state=candidate;
+ const scroll=window.scrollY;render();window.scrollTo(0,scroll);
+ if(created)toast('Autoshop fulfilled '+created+' scheduled '+(created===1?'order.':'orders.'));
+}
+async function checkAutoshop(){
+ if(autoshopChecking)return;
+ autoshopChecking=true;
+ try{
+  if(navigator.locks)await navigator.locks.request('tornet-autoshop',processDueSchedules);
+  else processDueSchedules();
+ }finally{autoshopChecking=false;}
+}
+document.addEventListener('DOMContentLoaded',checkAutoshop);
+window.addEventListener('pageshow',checkAutoshop);
+window.addEventListener('focus',checkAutoshop);
+window.addEventListener('hashchange',checkAutoshop);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkAutoshop();});
+document.getElementById('modal').addEventListener('close',checkAutoshop);
+setInterval(checkAutoshop,1000);

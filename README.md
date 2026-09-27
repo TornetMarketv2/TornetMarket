@@ -2,7 +2,7 @@
 
 > **FICTIONAL MOVIE PROP — NOT A REAL MARKETPLACE.** This project is a front-end set piece created for a film. It does not sell or deliver anything. All listings, prices, reviews, account statistics, wallet balances, earnings, transactions, orders, and market backstory are fictional presentation elements, not real offers or verified activity.
 
-The interface is interactive for filming: buttons, navigation, carts, profile editing, and simulated order statuses work inside the browser. No money moves, no cryptocurrency wallet is connected, no payment or escrow is processed, and no goods or services are provided. Autoshop plans do not execute purchases. The movie-prop feedback form sends the selected subject and typed message to the creator's Discord. It does not handle purchases, payments, or orders. Saved changes stay in browser storage on the device.
+The interface is interactive for filming: buttons, navigation, carts, profile editing, and simulated order statuses work inside the browser. No money moves, no cryptocurrency wallet is connected, no payment or escrow is processed, and no goods or services are provided. Autoshop schedules simulate purchases only in the device ledger; they never execute real purchases. The movie-prop feedback form sends the selected subject and typed message to the creator's Discord. It does not handle purchases, payments, or orders. Saved changes stay in browser storage on the device.
 
 The sign-in screen is a client-side prop control, not secure account authentication. Do not enter real credentials, payment details, wallet recovery phrases, or personal information. References to historical marketplaces are background context and do not imply affiliation with their operators. Fictional listings do not offer access to real accounts, identity records, documents, or other goods.
 
@@ -47,7 +47,7 @@ The previous index.html, styles.css, and script.js are preserved in original-bac
 
 ## Reference styling and background
 
-The Home page follows MarketplaceReference.png: a floating header, owner stats strip, boxed categories, and centered welcome panel. Autoshop opens the product catalog. Your supplied TornetMarketBacgrkoundRefernece image is used as assets/background.jpg, with a dark overlay for readability. Replace that file to change the backdrop. Your original reference files are untouched.
+The Home page follows MarketplaceReference.png: a floating header, owner stats strip, boxed categories, and centered welcome panel. Autoshop opens its scheduling console. Your supplied TornetMarketBacgrkoundRefernece image is used as assets/background.jpg, with a dark overlay for readability. Replace that file to change the backdrop. Your original reference files are untouched.
 
 The generated wordmark is assets/logo.png. The compact T artwork is exported to favicon.png, apple-touch-icon.png, icon-192.png, and icon-512.png. Full generated source PNGs are retained in assets/.
 
@@ -91,17 +91,15 @@ The left sidebar now contains Categories and the existing owner/support/sign-in 
 
 The viewport uses viewport-fit=cover, with safe-area insets applied to page edges, sticky navigation, dialogs, and toasts. The drawer is positioned below the measured header and sized against the visual viewport. Chromium/WebKit checks covered simulated portrait/landscape safe-area insets and 30 additional categories. Physical iPhone testing is still recommended; browser emulation does not reproduce the hardware Dynamic Island.
 
-## Autoshop prop planner
+## Autoshop scheduling
 
-The Autoshop header link opens #/autoshop, independently of the category catalog at #/market. Signed-in owners can create, edit, pause/resume, remove, and preview locally saved plans. A plan contains fictional items, quantities, a future starting time, a repeat preference, and a per-run spending limit. The estimated total must fit within that limit.
+Autoshop (autoshop.js) uses MARKET.products and stores plans in tornet-v2.autoshopSchedules. While signed in, it checks on load, return/focus, route changes, and every second while visible. Browsers do not run this while closed: returning catches up on due runs. Open dialogs defer processing until closed to preserve drafts.
 
-The separate placeholder inventory is `MARKET.autoshopProps` at the bottom of products.js. Plans are stored in `tornet-v2.autoshopSchedules`. This is an explicitly labeled prop preview: there is no scheduler/worker, inventory reservation, external request, wallet deduction, or order creation. Passing dates display 'Window passed'; repeat preferences do not execute. Chromium and WebKit checks verified state persistence and that planning never mutates cart, wallet, orders, or transactions.
+One-time schedules show Fulfilled after processing. Daily/weekly schedules catch up each due occurrence in start-date order per plan, advancing by local calendar days (including daylight-saving changes). Large backlogs process at most 100 occurrences per plan per pass. Paused plans remain untouched; resuming catches up. Editing replaces the plan's timing with a new future start.
 
-## Autoshop recovery
+Each run uses current catalog prices, validates items and quantities, checks its spending limit and available USD balance, and atomically saves the local order, wallet debit, transaction, and execution cursor. Missing items, insufficient funds, or a price above the limit block the run until corrected. Storage failure does not debit the wallet. Saved run identifiers prevent replay after reload; Web Locks serialize scheduler passes across supported browser tabs. Orders use the scheduled timestamp, with a separate processedAt timestamp, and follow the existing order-status display. The cart is unchanged. No payment network, stock reservation, real purchase, or external fulfillment is involved.
 
-The restored scheduling feature lives in **autoshop.js**. index.html loads it after products.js and before script.js. Include autoshop.js when deploying the static site; the local server and offline cache include it. The inventory remains in MARKET.autoshopProps in products.js. A recovery copy is kept at original-backup/autoshop-restored.js, alongside the timestamped script snapshot from before restoration.
-
-Autoshop's selection now reads MARKET.products directly, so catalog additions, names, and prices automatically appear in its picker. MARKET.autoshopProps is retained for reference but is no longer read. Saved plans keep item snapshots; when editing a plan whose item was removed, the selector marks that item unavailable and requires a replacement. Planning remains non-executing and never changes wallet balances or orders.
+Chromium and WebKit checks cover overdue and recurring runs, visible timers, reload deduplication, paused plans, funds/limits, missing items, failed storage, and order-history rendering.
 
 ## Oni browser and installed-app icons
 
