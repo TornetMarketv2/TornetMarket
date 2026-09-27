@@ -1,15 +1,27 @@
 'use strict';
 // This webhook is a dummy webhook connected to a test channel on a new discord account in a new server.
 const PROP_FEEDBACK_WEBHOOK = 'https://discord.com/api/webhooks/1553638990106861610/eZRt99csJZj6aGmv-Hrjaw4fG6NLKoV3KkfP0NbDCVNWzlKpp7wX6nQ4pHekvGdb0I0x';
+const ACCESS_REQUEST_MESSAGE = "Id like access to Tornet Market. Please contact me at : [your email].";
 let propFeedbackSending = false;
+document.addEventListener('change',event=>{
+ if(!event.target.matches('#support-form select[name="subject"]'))return;
+ const form=event.target.form,message=form.querySelector('[name="message"]');
+ if(event.target.value==='Request access'){
+  if(!message.value.trim())message.value=ACCESS_REQUEST_MESSAGE;
+ }else if(message.value===ACCESS_REQUEST_MESSAGE){message.value='';}
+ form.querySelector('[data-feedback-status]').textContent='';
+});
 async function sendPropFeedback(form) {
  const status = form.querySelector('[data-feedback-status]');
  if (propFeedbackSending) { status.textContent = 'A message is already being sent. Please wait.'; return; }
  const data = new FormData(form);
  const subject = String(data.get('subject') || '');
  const message = String(data.get('message') || '').trim();
- if (!['Order Support','General Question/Inquiry','Website bug'].includes(subject) || message.length < 5 || message.length > 2000) {
+ if (!['Order Support','General Question/Inquiry','Website bug','Request access'].includes(subject) || message.length < 5 || message.length > 2000) {
   status.textContent = 'Choose a feedback subject and enter 5 to 2,000 characters.'; return;
+ }
+ if(subject==='Request access'&&(message.includes('[your email]')||! /[^\s@]+@[^\s@]+\.[^\s@]+/.test(message))){
+  status.textContent='Replace [your email] with your email address before sending.';return;
  }
  const button = form.querySelector('[type="submit"]');
  const originalLabel = button.innerHTML;

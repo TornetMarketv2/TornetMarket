@@ -112,3 +112,15 @@ Browser tabs now use assets/oni-favicon-32.png and oni-favicon-48.png. Safari Ho
 The contact form sends only its selected feedback subject and typed message to Discord, after the visitor clicks Send message. It forwards no profile, wallet, order, or account data. The form displays the destination and movie-prop-only purpose both in its placeholder and in a persistent notice. The on-screen subjects remain Order Support, General Question/Inquiry, and Website bug as fictional movie dialogue. The message notice and Discord payload identify submissions as movie-prop feedback only; no real purchases, payments, or orders are supported.
 
 feedback.js contains the explicitly public, disposable webhook chosen for this browser-only implementation. It is not encrypted or private; replace it after filming. A server-side secret is needed for a protected deployment. Discord mentions are disabled. Duplicate submissions while sending are blocked. Failure retains the message; an uncertain delivery asks the sender to check Discord before retrying. Tests intercept the network and never send real Discord messages. Include feedback.js in deployment; offline cache version is v8.
+
+## Check for updates
+
+Open the profile avatar and choose Check for updates above Edit profile. The app checks its deployed service worker, downloads a complete new app shell, saves the current account, activates the release, and reloads the current route. Wallet, orders, cart, profile, schedules, and tab login are retained. No browser storage is cleared. Offline checks, failed downloads, and save failures show an error without restarting.
+
+The source is the deployed site, not raw GitHub source. The Pages workflow in .github/workflows/pages.yml generates a content-based release on every push to main. To use it, set repository Settings > Pages > Build and deployment > Source to GitHub Actions. This one-time setting must be enabled by a repository administrator. Nothing is published until the workflow files are pushed and Pages deployment succeeds.
+
+For branch-based or other static hosting, run node scripts/build-update.cjs before deploying and include sw.js and updates.js. The local node server rebuilds the release when sw.js is checked. Installed pages use a consistent cached release, so use Check for updates after editing files. On first upgrade from the old updater, reload once to get the new button. Changes to product data and image contents change the release identifier too.
+
+## Access-request shortcut
+
+The login panel link opens #/support/request-access, selects Request access, and fills the editable contact message. Request access is also available directly from the contact subject dropdown. Switching away clears only the untouched generated template; edited messages are preserved. Replace the email placeholder before sending. This forwards a contact request through the existing form; it does not create accounts, generate passwords, or change authentication.
