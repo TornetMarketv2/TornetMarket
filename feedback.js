@@ -1,4 +1,4 @@
-﻿'use strict';
+'use strict';
 // Browser-only movie-prop feedback. This URL is public, not an encrypted secret.
 // Replace or remove the disposable webhook after filming.
 const PROP_FEEDBACK_WEBHOOK = 'https://discord.com/api/webhooks/1553638990106861610/eZRt99csJZj6aGmv-Hrjaw4fG6NLKoV3KkfP0NbDCVNWzlKpp7wX6nQ4pHekvGdb0I0x';
@@ -18,7 +18,7 @@ async function sendPropFeedback(form) {
  button.disabled = true;
  button.textContent = 'Sending...';
  form.setAttribute('aria-busy','true');
- status.textContent = 'Sending movie-prop feedback to Discord...';
+ status.textContent = 'Sending message to Tornet Market...';
  const controller = new AbortController();
  const timeout = setTimeout(() => controller.abort(),15000);
  try {
@@ -27,20 +27,20 @@ async function sendPropFeedback(form) {
   const response = await fetch(url.href, {
    method:'POST', headers:{'Content-Type':'application/json'}, credentials:'omit', referrerPolicy:'no-referrer', signal:controller.signal,
    body:JSON.stringify({
-    content:'Movie-prop feedback only. No real purchases, payments, or orders are supported.',
+    content:'',
     embeds:[{title:subject,description:message,color:7919856}],
     allowed_mentions:{parse:[]}
    })
   });
-  if (response.status === 429) throw new Error('Discord is receiving messages too quickly. Please wait before trying again. Your text has been kept.');
-  if (!response.ok) throw new Error('Discord did not accept the message. Your text has been kept. The creator may need to replace the webhook.');
+  if (response.status === 429) throw new Error('Tornet Market is receiving messages too quickly. Please wait before trying again. Your text has been kept.');
+  if (!response.ok) throw new Error('Tornet Market did not accept the message. Your text has been kept. The Owner may need to fix a bug.');
   const result = await response.json();
-  if (!result.id) throw new Error('Delivery could not be confirmed. Check Discord before retrying to avoid duplicates.');
+  if (!result.id) throw new Error('Delivery could not be confirmed. Check with a Admin before retrying to avoid duplicates.');
   form.reset();
-  status.textContent = 'Message sent to the creator\'s Discord. Thank you for the movie-prop feedback.';
+  status.textContent = 'Message sent to Tornet Market. Expect a response within 24 Hours.';
  } catch (error) {
   status.textContent = error.name === 'AbortError' || error instanceof TypeError
-   ? 'Delivery could not be confirmed. Your text has been kept. Check Discord before retrying to avoid duplicates.'
+   ? 'Delivery could not be confirmed. Your text has been kept. Check Tornet Market before retrying to avoid duplicates.'
    : error.message;
  } finally {
   clearTimeout(timeout);
