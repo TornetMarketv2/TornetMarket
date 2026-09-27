@@ -3,7 +3,7 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const types = {'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.gif':'image/gif','.png':'image/png','.svg':'image/svg+xml','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp','.webmanifest':'application/manifest+json'};
-const publicFiles = new Set(['index.html','styles.css','script.js','autoshop.js','products.js','sw.js','manifest.webmanifest']);
+const publicFiles = new Set(['index.html','styles.css','script.js','autoshop.js','feedback.js','products.js','sw.js','manifest.webmanifest']);
 http.createServer((req,res) => {
  let name;
  try { name=decodeURIComponent(new URL(req.url,'http://localhost').pathname).replace(/^\/+/, '') || 'index.html'; } catch { res.writeHead(400);res.end();return; }

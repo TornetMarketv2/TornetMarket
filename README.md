@@ -2,7 +2,7 @@
 
 > **FICTIONAL MOVIE PROP — NOT A REAL MARKETPLACE.** This project is a front-end set piece created for a film. It does not sell or deliver anything. All listings, prices, reviews, account statistics, wallet balances, earnings, transactions, orders, and market backstory are fictional presentation elements, not real offers or verified activity.
 
-The interface is interactive for filming: buttons, navigation, carts, profile editing, and simulated order statuses work inside the browser. No money moves, no cryptocurrency wallet is connected, no payment or escrow is processed, and no goods or services are provided. Autoshop plans do not execute purchases. Support forms do not send messages. Saved changes stay in browser storage on the device.
+The interface is interactive for filming: buttons, navigation, carts, profile editing, and simulated order statuses work inside the browser. No money moves, no cryptocurrency wallet is connected, no payment or escrow is processed, and no goods or services are provided. Autoshop plans do not execute purchases. The movie-prop feedback form sends the selected subject and typed message to the creator's Discord. It does not handle purchases, payments, or orders. Saved changes stay in browser storage on the device.
 
 The sign-in screen is a client-side prop control, not secure account authentication. Do not enter real credentials, payment details, wallet recovery phrases, or personal information. References to historical marketplaces are background context and do not imply affiliation with their operators. Fictional listings do not offer access to real accounts, identity records, documents, or other goods.
 
@@ -59,7 +59,7 @@ Signed-out visitors see blurred synthetic category and product previews. Real li
 
 This is a front-end presentation gate, not protection against source inspection: products.js is still publicly served, local session state is editable, and existing offline caches may contain assets. Before production, move catalog data and authorization to server APIs, implement secure accounts/sessions, and keep protected responses out of shared/offline caches.
 
-Public demo branding has been replaced with Tornet branding. Wallet and checkout retain explicit test labels because payment, fulfillment, and wallet integrations are not live; the support form is a message preview until a delivery service is connected.
+Public demo branding has been replaced with Tornet branding. Wallet and checkout retain explicit test labels because payment, fulfillment, and wallet integrations are not live; the feedback form now sends movie-production feedback to Discord as described below.
 
 Run test-tools/membership.cjs with TORNET_TEST_PASSWORD set in the environment to check guest gating, sign-in, logout, public routes, and mobile layouts in Chromium and WebKit. No password is saved in the test file.
 
@@ -106,3 +106,9 @@ Autoshop's selection now reads MARKET.products directly, so catalog additions, n
 ## Oni browser and installed-app icons
 
 Browser tabs now use assets/oni-favicon-32.png and oni-favicon-48.png. Safari Home Screen uses oni-apple-touch-180.png. The manifest uses oni-icon-192.png, oni-icon-512.png, and a separately padded oni-maskable-512.png. These are size exports of the supplied TornetMarketOniLogo.png, with no AI redraw. App icons use an opaque dark-blue background; the maskable version keeps the artwork inside the safe area. Versioned filenames and service-worker cache v6 replace the old T icons. Existing installed shortcuts may need to be removed and added again after deployment.
+
+## Movie-prop feedback
+
+The contact form sends only its selected feedback subject and typed message to Discord, after the visitor clicks Send message. It forwards no profile, wallet, order, or account data. The form displays the destination and movie-prop-only purpose both in its placeholder and in a persistent notice. The on-screen subjects remain Order Support, General Question/Inquiry, and Website bug as fictional movie dialogue. The message notice and Discord payload identify submissions as movie-prop feedback only; no real purchases, payments, or orders are supported.
+
+feedback.js contains the explicitly public, disposable webhook chosen for this browser-only implementation. It is not encrypted or private; replace it after filming. A server-side secret is needed for a protected deployment. Discord mentions are disabled. Duplicate submissions while sending are blocked. Failure retains the message; an uncertain delivery asks the sender to check Discord before retrying. Tests intercept the network and never send real Discord messages. Include feedback.js in deployment; offline cache version is v8.
