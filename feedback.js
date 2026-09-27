@@ -1,6 +1,5 @@
 'use strict';
-// Browser-only movie-prop feedback. This URL is public, not an encrypted secret.
-// Replace or remove the disposable webhook after filming.
+// This webhook is a dummy webhook connected to a test channel on a new discord account in a new server.
 const PROP_FEEDBACK_WEBHOOK = 'https://discord.com/api/webhooks/1553638990106861610/eZRt99csJZj6aGmv-Hrjaw4fG6NLKoV3KkfP0NbDCVNWzlKpp7wX6nQ4pHekvGdb0I0x';
 let propFeedbackSending = false;
 async function sendPropFeedback(form) {
