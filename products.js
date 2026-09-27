@@ -1,4 +1,4 @@
-﻿/* EDIT YOUR STORE HERE. Prices are USD; crypto conversions use a fixed reference rate.
+﻿/* EDIT YOUR STORE HERE. Prices and balances are USD; rates.js supplies the live BTC/USD display conversion.
    Put pictures inside assets/ and set image: 'assets/your-picture.png'.
    Keep every id unique. Art styles: terminal, orbit, grid, wave, cube, code. */
 window.MARKET = {
@@ -18,7 +18,7 @@ window.MARKET = {
   ],
   name: 'Tornet Market', 
   tagline: 'Digital goods. Underground spirit.', 
-  btcRate: 65000, 
+  btcRate: 65000, // Legacy setting, no longer used by the live display. 
   startingBalance: 1250,
   products: [
     // --- EXISTING PRODUCTS ---

@@ -22,7 +22,7 @@ The owner username is `swiping.cc`; use the password requested in the project co
 
 ## Customize
 
-- **products.js**: all product names, categories, prices, descriptions, tags, placeholder ratings, starting balance, and the fixed BTC conversion rate. Each product needs a unique id. To use your image, put it in assets/ and set the product's `image` to `assets/your-image.png`.
+- **products.js**: all product names, categories, prices, descriptions, tags, placeholder ratings, starting balance, and starting display settings. Each product needs a unique id. To use your image, put it in assets/ and set the product's `image` to `assets/your-image.png`.
 - **styles.css**: colors are in the first `:root` block; all layouts and mobile styles are here.
 - **script.js**: page content, navigation, demo login, cart, orders, and wallet behavior. Pages use hash routes, so browser back/forward and links work without hosting rewrites.
 - **index.html**: page metadata, favicon, and entry scripts.
@@ -124,3 +124,13 @@ For branch-based or other static hosting, run node scripts/build-update.cjs befo
 ## Access-request shortcut
 
 The login panel link opens #/support/request-access, selects Request access, and fills the editable contact message. Request access is also available directly from the contact subject dropdown. Switching away clears only the untouched generated template; edited messages are preserved. Replace the email placeholder before sending. This forwards a contact request through the existing form; it does not create accounts, generate passwords, or change authentication.
+
+## Editable order total
+
+Edit profile > Your wallet includes Total orders (a nonnegative whole number). It changes the displayed total in the header and Orders summary and persists on this device. New orders increase that chosen total by one. The setting uses an offset from the stored order count, so existing order records and receipts remain intact; the Order history badge continues to count the actual saved records.
+
+## Live BTC/USD display
+
+rates.js fetches the public Coinbase BTC-USD spot price (no API key) on load and approximately every 60 seconds while the page is visible. Wallet balances, product prices, and checkout charges remain USD; BTC values are estimated conversions using the same quote and eight decimal places. Rate changes never add or deduct funds. This is not a BTC-denominated account or an executable exchange quote.
+
+The wallet and product view identify Live rate, Last known rate, or Rate unavailable. Conversion tooltips include the quote and retrieval time. A separate local cache retains the last successful price for up to 24 hours; failed, offline, or older responses are never labeled live. Without a usable quote the BTC display is a dash, while USD checkout remains available. Live prices bypass app-shell caching. Source: https://docs.cdp.coinbase.com/coinbase-app/track-apis/prices

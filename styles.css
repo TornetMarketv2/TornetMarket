@@ -203,3 +203,5 @@ dialog{inset-block-start:var(--safe-top);inset-block-end:var(--safe-bottom);max-
 .market-rules{padding-left:1.5rem;margin:1.5rem 0}.market-rules li{padding:0 0 1rem .5rem;margin-bottom:1rem;border-bottom:1px solid rgba(120,216,240,.14)}.market-rules li::marker{color:#78d8f0;font-family:monospace}.market-rules h3{margin:0 0 .5rem;font-size:1rem}.market-rules p{margin:0;line-height:1.65;color:var(--muted,#a7b1bc)}
 
 .login-note>span{min-width:0;line-height:1.7}.login-note>.icon{flex-shrink:0}.request-access-link{color:var(--green);text-decoration:underline;text-underline-offset:3px}.request-access-link:hover{color:var(--text)}
+
+.btc-amount{font-weight:inherit}
