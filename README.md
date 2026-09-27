@@ -102,3 +102,7 @@ The separate placeholder inventory is `MARKET.autoshopProps` at the bottom of pr
 The restored scheduling feature lives in **autoshop.js**. index.html loads it after products.js and before script.js. Include autoshop.js when deploying the static site; the local server and offline cache include it. The inventory remains in MARKET.autoshopProps in products.js. A recovery copy is kept at original-backup/autoshop-restored.js, alongside the timestamped script snapshot from before restoration.
 
 Autoshop's selection now reads MARKET.products directly, so catalog additions, names, and prices automatically appear in its picker. MARKET.autoshopProps is retained for reference but is no longer read. Saved plans keep item snapshots; when editing a plan whose item was removed, the selector marks that item unavailable and requires a replacement. Planning remains non-executing and never changes wallet balances or orders.
+
+## Oni browser and installed-app icons
+
+Browser tabs now use assets/oni-favicon-32.png and oni-favicon-48.png. Safari Home Screen uses oni-apple-touch-180.png. The manifest uses oni-icon-192.png, oni-icon-512.png, and a separately padded oni-maskable-512.png. These are size exports of the supplied TornetMarketOniLogo.png, with no AI redraw. App icons use an opaque dark-blue background; the maskable version keeps the artwork inside the safe area. Versioned filenames and service-worker cache v6 replace the old T icons. Existing installed shortcuts may need to be removed and added again after deployment.
