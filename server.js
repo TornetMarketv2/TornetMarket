@@ -12,6 +12,7 @@ http.createServer((req,res) => {
  if(name==='sw.js'){try{buildUpdates();}catch{res.writeHead(500);res.end('Update build failed');return;}}
  const target=path.resolve(__dirname,name);
  const assetRoot=path.resolve(__dirname,'assets')+path.sep;
- if(!publicFiles.has(name) && !(name.startsWith('assets/') && target.startsWith(assetRoot) && types[path.extname(target)])) {res.writeHead(404);res.end('Not found');return;}
+ const productImageRoot=path.resolve(__dirname,'ProductImages')+path.sep;
+ if(!publicFiles.has(name) && !((name.startsWith('assets/') && target.startsWith(assetRoot) || name.startsWith('ProductImages/') && target.startsWith(productImageRoot)) && types[path.extname(target)])) {res.writeHead(404);res.end('Not found');return;}
  fs.readFile(target,(error,data)=>{ if(error){res.writeHead(404);res.end('Not found');return;}res.writeHead(200,{'Content-Type':types[path.extname(target)]||'application/octet-stream','Cache-Control':'no-cache','X-Content-Type-Options':'nosniff'});res.end(data); });
 }).listen(4173,'127.0.0.1',()=>console.log('Tornet Market: http://localhost:4173'));
