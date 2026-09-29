@@ -2,7 +2,7 @@
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const root=path.resolve(__dirname,'..');
 function buildUpdates(){
- const files=['index.html','styles.css','script.js','autoshop.js','feedback.js','updates.js','rates.js','products.js','manifest.webmanifest'];
+ const files=['index.html','styles.css','script.js','autoshop.js','feedback.js','updates.js','rates.js','products.js','manifest.webmanifest','robots.txt','sitemap.xml','llms.txt'];
 function assets(dir){for(const entry of fs.readdirSync(path.join(root,dir),{withFileTypes:true})){const name=dir+'/'+entry.name;if(entry.isDirectory())assets(name);else files.push(name);}}
 assets('assets');
 if(fs.existsSync(path.join(root,'ProductImages')))assets('ProductImages');
