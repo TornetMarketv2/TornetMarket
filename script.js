@@ -195,6 +195,23 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installProm
 // Service worker registration and manual updates are handled in updates.js.
 render();
 
+function startSplash() {
+ const screen=$('#splash-screen'), fill=$('#splash-progress-fill'), percent=$('#splash-percent'), status=$('#splash-status'), bar=$('.splash-progress');
+ if(!screen||!fill||!percent||!status||!bar)return;
+ const duration=2600, started=performance.now();
+ const stages=[[0,'Initializing market interface...'],[.25,'Establishing secure signal...'],[.55,'Loading the marketplace...'],[.8,'Preparing your entrance...']];
+ const update=now=>{
+  const progress=Math.min(1,(now-started)/duration), value=Math.round(progress*100);
+  fill.style.width=`${value}%`;percent.textContent=`${value}%`;bar.setAttribute('aria-valuenow',value);
+  const stage=stages.reduce((current,next)=>progress>=next[0]?next:current,stages[0]);status.textContent=stage[1];
+  if(progress<1){requestAnimationFrame(update);return;}
+  status.textContent='Market ready. Welcome in.';
+  setTimeout(()=>{document.body.classList.remove('is-loading');$('#app')?.setAttribute('aria-hidden','false');screen.classList.add('is-dismissed');setTimeout(()=>screen.remove(),700);},180);
+ };
+ requestAnimationFrame(update);
+}
+startSplash();
+
 // Close the phone navigation when revisiting its current page or tapping outside it.
 function closeMobileNavigation() {
  const sidebar = $('#sidebar');

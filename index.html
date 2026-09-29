@@ -4,10 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a1422">
-<meta name="description" content="Tornet Market — digital goods for those who build different. A marketplace for developers, hackers, coders, and innovators.">
+<meta name="description" content="Tornet Market™ | Tech Solutions and Marketplace for Hackers">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tornet Market™ | Tech Solutions and Marketplace for Hackers">
+<meta property="og:description" content="Tornet Market™ | Tech Solutions and Marketplace for Hackers">
+<meta property="og:url" content="https://tornetmarket.shop/">
+<meta property="og:image" content="https://tornetmarket.shop/assets/oni-icon-512.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Tornet Market™ | Tech Solutions and Marketplace for Hackers">
+<meta name="twitter:description" content="Tornet Market™ | Tech Solutions and Marketplace for Hackers">
+<meta name="twitter:image" content="https://tornetmarket.shop/assets/oni-icon-512.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Tornet Market / Digital underground</title>
+<title>Tornet Market™ | Tech Solutions and Marketplace for Hackers</title>
 <link rel="icon" type="image/png" sizes="32x32" href="assets/oni-favicon-32.png">
 <link rel="icon" type="image/png" sizes="48x48" href="assets/oni-favicon-48.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/oni-apple-touch-180.png">
@@ -20,8 +29,18 @@
 <script src="rates.js" defer></script>
 <script src="script.js" defer></script>
 </head>
-<body>
-<div id="app"></div>
+<body class="is-loading">
+<section id="splash-screen" class="splash-screen" aria-label="Loading Tornet Market">
+<div class="splash-shade"></div>
+<div class="splash-content">
+<p class="splash-kicker">WELCOME TO</p>
+<h1>Tornet Market <sup>™</sup></h1>
+<img class="splash-logo" src="assets/oni-motion.gif" alt="" width="256" height="256" decoding="async">
+<div class="splash-progress-row"><div class="splash-progress" role="progressbar" aria-label="Loading Tornet Market" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="splash-progress-fill"></span></div><span id="splash-percent" class="splash-percent">0%</span></div>
+<p id="splash-status" class="splash-status" aria-live="polite">Initializing market interface...</p>
+</div>
+</section>
+<div id="app" aria-hidden="true"></div>
 <dialog id="modal" aria-labelledby="modal-title"></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
 <noscript>Tornet Market needs JavaScript enabled.</noscript>
